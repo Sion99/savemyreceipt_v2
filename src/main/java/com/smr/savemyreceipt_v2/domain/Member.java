@@ -60,6 +60,13 @@ public class Member extends AuditingTimeEntity {
         this.oauth2Id = oauth2Id;
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateProfileUri(String profileUri) {
+        this.profileUri = profileUri;
+    }
 
 
 }
