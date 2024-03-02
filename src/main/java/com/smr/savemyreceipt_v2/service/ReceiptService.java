@@ -13,6 +13,7 @@ import com.smr.savemyreceipt_v2.infrastructure.MemberRepository;
 import com.smr.savemyreceipt_v2.infrastructure.ReceiptRepository;
 import com.smr.savemyreceipt_v2.utils.DataBucketUtil;
 import com.smr.savemyreceipt_v2.utils.GeminiUtil;
+import com.smr.savemyreceipt_v2.utils.ReceiptInfo;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +73,8 @@ public class ReceiptService {
         Group group = groupRepository.getGroupById(groupId);
         try {
             Receipt receipt = uploadToBucket(member, file, group);
-            ReceiptDetailResponseDto receiptDetailResponseDto = geminiUtil.sendReceipt(file);
+            ReceiptInfo receiptInfo = geminiUtil.sendReceipt(file);
+            receipt.updateReceiptInfo(receiptInfo);
             return ReceiptDetailResponseDto.convertToDto(receipt);
         } catch (Exception e) {
             throw new CustomException(ErrorStatus.GOOGLE_VISION_API_ERROR, ErrorStatus.GOOGLE_VISION_API_ERROR.getMessage());

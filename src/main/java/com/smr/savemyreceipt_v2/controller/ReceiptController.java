@@ -60,7 +60,7 @@ public class ReceiptController {
         @Parameter(hidden = true) @AuthenticationPrincipal User user,
         @RequestPart MultipartFile file,
         @PathVariable Long groupId) {
-        if (file.isEmpty()) {
+        if (file.isEmpty() || file.getContentType() == null || !file.getContentType().startsWith("image")) {
             return ApiResponseDto.error(ErrorStatus.IMAGE_NOT_FOUND, ErrorStatus.IMAGE_NOT_FOUND.getMessage());
         }
         return ApiResponseDto.success(SuccessStatus.RECEIPT_UPLOAD_SUCCESS, receiptService.uploadReceipt(user.getUsername(), file, groupId));

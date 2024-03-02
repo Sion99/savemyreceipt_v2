@@ -2,7 +2,6 @@ package com.smr.savemyreceipt_v2.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.smr.savemyreceipt_v2.DTO.receipt.response.ReceiptDetailResponseDto;
 import java.io.IOException;
 import java.util.Base64;
 import lombok.NoArgsConstructor;
@@ -25,7 +24,7 @@ public class GeminiUtil {
     @Value("${spring.cloud.gcp.gemini.api-url}")
     private String API_URL;
 
-    public ReceiptDetailResponseDto sendReceipt(MultipartFile file) {
+    public ReceiptInfo sendReceipt(MultipartFile file) {
         try {
             byte[] fileContent = file.getBytes();
             String encodedString = Base64.getEncoder().encodeToString(fileContent);
@@ -35,7 +34,7 @@ public class GeminiUtil {
                 "    {\n" +
                 "      \"parts\": [\n" +
                 "        {\n" +
-                "          \"text\": \"Extract purchase_date, total_price from the image in Json schema\\n\"\n" +
+                "          \"text\": \"Extract purchase_date, total_price from the image in Json schema. Purchase_date should be in yyyy-MM-dd format.\\n\"\n" +
                 "        },\n" +
                 "        {\n" +
                 "          \"inlineData\": {\n" +
@@ -88,14 +87,18 @@ public class GeminiUtil {
         }
     }
 
-    public ReceiptDetailResponseDto jsonParse(String json) {
+    public ReceiptInfo jsonParse(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         try {
             GeminiResponse response = objectMapper.readValue(json, GeminiResponse.class);
             String text = response.getCandidates().get(0).getContent().getParts().get(0).getText();
-            String jsonPart = text.replace("receipt_info", "");
-            return objectMapper.readValue(jsonPart, ReceiptDetailResponseDto.class);
+            // 불필요한 문자열 제거 (백틱 및 json 마크다운 표시)
+            String cleanedJson = text
+                .replace("```json", "") // 시작 부분의 ```json 제거
+                .replace("```", "") // 마지막 부분의 ``` 제거
+                .trim(); // 앞뒤 공백 제거
+            return objectMapper.readValue(cleanedJson, ReceiptInfo.class);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

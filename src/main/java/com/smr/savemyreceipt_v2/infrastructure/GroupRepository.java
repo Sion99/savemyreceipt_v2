@@ -14,8 +14,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     List<Group> findByNameContaining(String keyword);
 
-    List<Group> findByMember(Member member);
-
     default Group getGroupById(Long id) {
         return findById(id).orElseThrow(
             () -> new NotFoundException(ErrorStatus.GROUP_NOT_FOUND,

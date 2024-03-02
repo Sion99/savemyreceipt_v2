@@ -40,11 +40,6 @@ public class SecurityConfig {
     @Value("${spring.cloud.gcp.storage.credentials.location}")
     private String keyFileLocation;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     // Google Cloud Storage 연결할 때 credentials.json 파일을 사용하기 위해 Storage Bean 생성
     // 이 부분 안해주면 401 unauthorized 에러 발생
     @Bean
