@@ -68,5 +68,9 @@ public class Member extends AuditingTimeEntity {
         this.profileUri = profileUri;
     }
 
+    public void changeRole(String role) {
+        this.authority = role.equals("ROLE_ADMIN") ? Authority.ROLE_ADMIN : Authority.ROLE_USER;
+    }
+
 
 }

@@ -29,7 +29,7 @@ public class MemberService {
     @Transactional
     public MemberDetailResponseDto getMemberInfo(String email) {
         Member member = memberRepository.getMemberByEmail(email);
-        return MemberDetailResponseDto.toEntity(member);
+        return MemberDetailResponseDto.convertToDto(member);
     }
 
     @Transactional
@@ -37,7 +37,7 @@ public class MemberService {
         Member member = memberRepository.getMemberByEmail(email);
         member.updateName(memberUpdateRequestDto.getName());
         memberRepository.save(member);
-        return MemberDetailResponseDto.toEntity(member);
+        return MemberDetailResponseDto.convertToDto(member);
     }
 
     @Transactional
@@ -69,6 +69,6 @@ public class MemberService {
         member.updateProfileUri(imageUri);
         memberRepository.save(member);
 
-        return MemberDetailResponseDto.toEntity(member);
+        return MemberDetailResponseDto.convertToDto(member);
     }
 }

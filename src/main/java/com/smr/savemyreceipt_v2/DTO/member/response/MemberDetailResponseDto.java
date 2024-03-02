@@ -13,7 +13,7 @@ public class MemberDetailResponseDto {
     private String name;
     private String profileUri;
 
-    public static MemberDetailResponseDto toEntity(Member member) {
+    public static MemberDetailResponseDto convertToDto(Member member) {
         return MemberDetailResponseDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
