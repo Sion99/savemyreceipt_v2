@@ -30,6 +30,7 @@ public enum SuccessStatus {
     UPDATE_USER_INFO_SUCCESS(HttpStatus.CREATED, "유저 정보 수정 성공"),
     RECEIPT_UPLOAD_SUCCESS(HttpStatus.CREATED, "영수증 업로드 성공"),
     CREATE_GROUP_SUCCESS(HttpStatus.CREATED, "그룹 생성 성공"),
+    UPDATE_RECEIPT_INFO_SUCCESS(HttpStatus.CREATED, "영수증 정보 수정 성공"),
 
 
     ;

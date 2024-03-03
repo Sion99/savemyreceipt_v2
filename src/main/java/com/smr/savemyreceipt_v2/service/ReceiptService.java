@@ -1,5 +1,6 @@
 package com.smr.savemyreceipt_v2.service;
 
+import com.smr.savemyreceipt_v2.DTO.receipt.request.ReceiptUpdateRequestDto;
 import com.smr.savemyreceipt_v2.DTO.receipt.response.ReceiptDetailResponseDto;
 import com.smr.savemyreceipt_v2.DTO.receipt.response.ReceiptListResponseDto;
 import com.smr.savemyreceipt_v2.DTO.receipt.response.ReceiptResponseDto;
@@ -74,7 +75,7 @@ public class ReceiptService {
         try {
             Receipt receipt = uploadToBucket(member, file, group);
             ReceiptInfo receiptInfo = geminiUtil.sendReceipt(file);
-            receipt.updateReceiptInfo(receiptInfo);
+            receipt.updateReceipt(receiptInfo);
             return ReceiptDetailResponseDto.convertToDto(receipt);
         } catch (Exception e) {
             throw new CustomException(ErrorStatus.GOOGLE_VISION_API_ERROR, ErrorStatus.GOOGLE_VISION_API_ERROR.getMessage());
@@ -92,5 +93,16 @@ public class ReceiptService {
             .group(group)
             .build();
         return receiptRepository.save(receipt);
+    }
+
+    @Transactional
+    public void updateReceipt(String email, Long receiptId, ReceiptUpdateRequestDto receiptUpdateRequestDto) {
+        Member member = memberRepository.getMemberByEmail(email);
+        Receipt receipt = receiptRepository.getReceiptById(receiptId);
+        if (!receipt.getMember().equals(member)) {
+            throw new CustomException(ErrorStatus.RECEIPT_NOT_AUTHORIZED, ErrorStatus.RECEIPT_NOT_AUTHORIZED.getMessage());
+        }
+        receipt.updateReceipt(receiptUpdateRequestDto);
+        receiptRepository.save(receipt);
     }
 }

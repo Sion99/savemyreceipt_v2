@@ -16,6 +16,7 @@ public class ReceiptDetailResponseDto {
     private String memo;
     private Long price;
     private LocalDate purchaseDate;
+    private boolean isChecked;
 
 
     public static ReceiptDetailResponseDto convertToDto(Receipt receipt) {
@@ -27,6 +28,7 @@ public class ReceiptDetailResponseDto {
                 .memo(receipt.getMemo())
                 .price(receipt.getPrice())
                 .purchaseDate(receipt.getPurchaseDate())
+                .isChecked(receipt.isChecked())
                 .build();
     }
 

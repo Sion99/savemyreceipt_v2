@@ -15,6 +15,7 @@ public class ReceiptResponseDto {
     private String description;
     private LocalDate purchaseDate;
     private Long price;
+    private boolean isChecked;
 
     public static ReceiptResponseDto convertToDto(Receipt receipt) {
         return ReceiptResponseDto.builder()
@@ -23,6 +24,7 @@ public class ReceiptResponseDto {
                 .description(receipt.getDescription())
                 .purchaseDate(receipt.getPurchaseDate())
                 .price(receipt.getPrice())
+                .isChecked(receipt.isChecked())
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.smr.savemyreceipt_v2.controller;
 
 import com.smr.savemyreceipt_v2.DTO.ApiResponseDto;
+import com.smr.savemyreceipt_v2.DTO.receipt.request.ReceiptUpdateRequestDto;
 import com.smr.savemyreceipt_v2.DTO.receipt.response.ReceiptDetailResponseDto;
 import com.smr.savemyreceipt_v2.DTO.receipt.response.ReceiptListResponseDto;
 import com.smr.savemyreceipt_v2.exception.ErrorStatus;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -64,6 +66,16 @@ public class ReceiptController {
             return ApiResponseDto.error(ErrorStatus.IMAGE_NOT_FOUND, ErrorStatus.IMAGE_NOT_FOUND.getMessage());
         }
         return ApiResponseDto.success(SuccessStatus.RECEIPT_UPLOAD_SUCCESS, receiptService.uploadReceipt(user.getUsername(), file, groupId));
+    }
+
+    @Operation(summary = "영수증 업데이트", description = "영수증 정보를 업데이트합니다.")
+    @PostMapping("/update/{receiptId}")
+    public ApiResponseDto<?> updateReceipt(
+        @Parameter(hidden = true) @AuthenticationPrincipal User user,
+        @Parameter(description = "영수증 ID") @PathVariable Long receiptId,
+        @RequestBody ReceiptUpdateRequestDto receiptUpdateRequestDto) {
+        receiptService.updateReceipt(user.getUsername(), receiptId, receiptUpdateRequestDto);
+        return ApiResponseDto.success(SuccessStatus.UPDATE_RECEIPT_INFO_SUCCESS, SuccessStatus.UPDATE_RECEIPT_INFO_SUCCESS.getMessage());
     }
 
 }
