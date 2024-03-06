@@ -4,6 +4,8 @@ package com.smr.savemyreceipt_v2.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.smr.savemyreceipt_v2.jwt.CustomAccessDeniedHandler;
+import com.smr.savemyreceipt_v2.jwt.CustomEntryPoint;
 import com.smr.savemyreceipt_v2.jwt.JwtFilter;
 import com.smr.savemyreceipt_v2.jwt.TokenProvider;
 import com.smr.savemyreceipt_v2.oauth2.OAuth2LoginFailureHandler;
@@ -37,6 +39,8 @@ public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomEntryPoint entryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Value("${spring.cloud.gcp.storage.credentials.location}")
     private String keyFileLocation;
@@ -80,7 +84,9 @@ public class SecurityConfig {
                     .requestMatchers(WHITE_LIST).permitAll()
                     .requestMatchers(AUTHENTICATION_LIST).hasRole("USER")
                     .anyRequest().authenticated();
-            }).sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            }).exceptionHandling(c ->
+                c.authenticationEntryPoint(entryPoint).accessDeniedHandler(accessDeniedHandler)
+            ).sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
