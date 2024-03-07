@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final TokenProvider tokenProvider;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -35,11 +34,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        redisTemplate.opsForValue().set("RT:" + authentication.getName(),
-            tokenDto.getRefreshToken(),
-            tokenProvider.getRefreshTokenExpireTime(),
-            TimeUnit.MILLISECONDS);
-
-        response.sendRedirect("https://localhost:3000/login" + "?accessToken=" + tokenDto.getAccessToken() + "&refreshToken=" + tokenDto.getRefreshToken());
+        response.sendRedirect("http://localhost:3000/login" + "?accessToken=" + tokenDto.getAccessToken());
     }
 }
